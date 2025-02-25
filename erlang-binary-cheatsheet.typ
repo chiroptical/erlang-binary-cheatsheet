@@ -41,11 +41,93 @@
   [`<<A:16/float>> = <<1, 17>>`], [A = 1.627e-5],
   [`<<A/signed>> = <<255>>`], [A = -1],
   [`<<A:16/big>> = <<255, 0>>`], [A = 65280],
-  [`<<A:16/litte>> = <<255, 0>>`], [A = 255],
-  [`<<"pöpcörn"/utf8>>`], [TODO],
+  [`<<A:16/little>> = <<255, 0>>`], [A = 255],
+  [`<<"pöpcörn"/utf8>>`], [How erlang handles unicode],
+  table.cell(
+    colspan: 2,
+    [ When constructing a binary, if the size of an integer `N` is too large
+      to fit inside the given segment, the most signif­icant bits are silently
+      discarded and only the `N` least significant bits kept.
+    ],
+  )
+)
+
+
+#table(
+  columns: (auto),
+  table.header(
+   [Segments],
+  ),
   [
-    When constructing a binary, if the size of an integer `N` is too large
-    to fit inside the given segment, the most signif­icant bits are silently
-    discarded and only the `N` least significant bits kept.
-  ]
+    Each segment in a binary has the following general syntax:
+    `Value:Size/TypeSpecifierList`. The `Size` and `TypeSpecifier` can be
+    omitted.
+    #linebreak()
+    #linebreak()
+    `Value` is either a literal or a variable, `Size` is multiplied by the
+    unit in `TypeSpecifierList`, and can be any expression that evaluates to an
+    `integer`#super[1]. Think of `Size` as the number of items of the type in
+    the `TypeSpecifierList`
+    #linebreak()
+    #linebreak()
+    *Contrived example:* `X:4/little-signed-integer-unit:8` has a total size
+    of `4*8 = 32` bits, and it contains a signed integer in little endian byte
+    order.
+  ],
+  table.footer(
+    [ #super[1] Mostly true, see Bit Syntax Expressions in Erlang documentation for complete picture.
+    ],
+  ),
+)
+
+#table(
+  columns: (auto),
+  table.header(
+   [Binary comprehension example],
+  ),
+  [
+    Just like with lists, there is a notation for binary comprehension.
+    Below is an example of how to use this to convert a 32 bit integer into a
+    hexrepresentation:
+```erlang
+int_as_hex(Int) ->
+  IntAsBin = <<Int:32>>,
+  "0x" ++ lists:flatten(
+    [byte_to_hex(<<Byte>>) || <<Byte:8>> <= IntAsBin]
+  ).
+byte_to_hex(<<Fst:4, Snd:4>>) ->
+  [integer_to_list(Fst, 16), integer_to_list(Snd, 16))].
+```
+  ],
+  table.footer(
+    [
+      You can mix list- and binary-comprehensions: if the generator is a list, use
+      `<-`, if it's a binary, use `<=`. If you want the result to be a binary, use
+      `<<>>`, if you want a list, use `[]` around the expression.
+    ],
+  ),
+)
+
+#table(
+  columns: (auto),
+  table.header(
+   [Binary comprehension example],
+  ),
+  [
+    Use the Erlang shell to trial and error you way to a correct expression. A
+    useful tool for understanding why your binaries are bad matching is `bit_size`:
+```erlang
+bit_size(<<1/integer>>).              % => 8
+bit_size(<<<<1:1, 0:1>>/bitstring>>). % => 2
+bit_size(<<1.0/float>>).              % => 64
+bit_size(<<<<1, 2>>/binary>>).        % => 16
+```
+  ],
+  table.footer(
+    [
+      A related one is `byte_size`:
+      #linebreak()
+      #raw("MinBytesToEncodeNumber = byte_size(binary:encode_unsigned(Number)).", lang: "erlang")
+    ],
+  ),
 )
