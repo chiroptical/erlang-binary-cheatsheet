@@ -5,7 +5,9 @@
   flipped: true,
   margin: 1cm,
 )
-#set text(font: "JetBrains Mono", size: 10pt)
+
+// TODO: Can we add custom fonts?
+// #set text(font: "JetBrains Mono", size: 10pt)
 
 #show: cram-snap.with(
   title: [Erlang Binary Cheatsheet],
