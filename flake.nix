@@ -25,7 +25,7 @@
 
       # nix run . -- compile main.typ
       apps = forAllSystems (pkgs: {
-        default = { type = "app"; program = "${pkgs.typst}"; };
+        default = { type = "app"; program = "${pkgs.typst}/bin/typst"; };
       });
     };
 }
