@@ -36,7 +36,8 @@
      to fit inside the given segment, the most significant bits are silently
      discarded and the `N` least significant bits kept.],
   ),
-  table.footer(
+  table.cell(
+    colspan: 2,
     [#super[1] In the shell, numbers in the ASCII range are printed as ASCII (turn off with `shell:strings(false)`)],
   ),
 )
@@ -68,12 +69,12 @@
   table.header([Binary comprehension example]),
   [Just like with lists, there is a notation for binary comprehension.
    Below is an example of how to use this to convert a 32 bit integer into a
-   hexrepresentation:
+   hex representation:
 ```erlang
 int_as_hex(Int) ->
   IntAsBin = <<Int:32>>,
   "0x" ++ lists:flatten(
-    [byte_to_hex(<<Byte>>) || <<Byte:8>> <= IntAsBin]
+    [byte_to_hex(<<Byte>>) || <<Byte:8>> <:= IntAsBin]
   ).
 byte_to_hex(<<Nibble1:4, Nibble2:4>>) ->
   [integer_to_list(Nibble1, 16), integer_to_list(Nibble2, 16))].
