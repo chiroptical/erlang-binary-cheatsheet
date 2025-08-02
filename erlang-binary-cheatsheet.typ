@@ -1,6 +1,6 @@
 #import "@preview/cram-snap:0.2.2": cram-snap, theader
 
-#set page(paper: "a4", flipped: true, margin: 1cm)
+#set page(paper: "a4", flipped: true, margin: 1cm
 
 // TODO: Can we add custom fonts?
 // #set text(font: "JetBrains Mono", size: 10pt)
